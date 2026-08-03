@@ -2248,134 +2248,7 @@ function getOfflineReply(type) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-async function callDeepSeek(userText, onChunk) {
-  if (!apiKey) return null;
 
-  const systemPrompt = buildSystemPrompt();
-  const context = messages.slice(-80).filter(function(m) { return m.type !== 'gift_sent' && m.type !== 'gift_received'; }).slice(-50).map(m => ({
-    role: m.role === 'user' ? 'user' : 'assistant',
-    content: m.text || (m.type === 'red_packet' ? '[红包]' : ''),
-  }));
-
-  // Inject pending gifts — only for user-initiated calls (not heartbeat/proactive)
-  var giftMsgs = [];
-  if (_pendingGifts.length > 0) {
-    var giftNames = _pendingGifts.map(function(pg) { return pg.icon + ' ' + pg.name; }).join('、');
-    var giftDesc = _pendingGifts.map(function(pg) { return pg.desc; }).join('；');
-    giftMsgs = [{
-      role: 'system',
-      content: '（' + (userProfile.name || '她') + '刚刚送了' + _pendingGifts.length + '个礼物给你：' + giftNames + '。' + giftDesc + '。请在下一句回复里自然地感谢她，如果送了多个礼物可以表现得格外开心。）'
-    }];
-    _pendingGifts = [];
-  }
-
-  const isStreaming = !!onChunk;
-  let fullText = ''; // accumulates tokens during streaming, used for abort recovery
-
-  try {
-    if (abortController) { abortController.abort(); }
-    abortController = new AbortController();
-
-    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-      },
-      body: JSON.stringify({
-        model: modelName,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...context,
-          ...giftMsgs,
-          { role: 'user', content: userText },
-        ],
-        temperature: temperature,
-        top_p: topP,
-        max_tokens: 400,
-        stream: isStreaming,
-      }),
-      signal: abortController.signal,
-    });
-
-    if (!resp.ok) {
-      abortController = null;
-      papiErrorToast(resp.status);
-      // Return a natural offline reply instead of null — avoids cold silence
-      if (resp.status === 401 || resp.status === 403) {
-        return getOfflineReply('key');
-      } else if (resp.status === 429) {
-        return getOfflineReply('busy');
-      }
-      return getOfflineReply('default');
-    }
-
-    // Non-streaming path (backward compat: proactive, summary, moments, etc.)
-    if (!isStreaming) {
-      const data = await resp.json();
-      abortController = null;
-      return data.choices?.[0]?.message?.content?.trim() || null;
-    }
-
-    // === SSE Streaming ===
-    if (!resp.body) { abortController = null; return null; }
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let streamDone = false;
-
-    while (!streamDone) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || ''; // keep incomplete line for next chunk
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || !trimmed.startsWith('data: ')) continue;
-        const dataStr = trimmed.slice(6);
-        if (dataStr === '[DONE]') { streamDone = true; break; }
-
-        try {
-          const parsed = JSON.parse(dataStr);
-          const token = parsed.choices?.[0]?.delta?.content;
-          if (token) {
-            fullText += token;
-            onChunk(token);
-          }
-        } catch (e) { /* skip unparseable chunks */ }
-      }
-    }
-
-    // Flush final buffer
-    buffer += decoder.decode();
-    if (buffer.trim()) {
-      const trimmed = buffer.trim();
-      if (trimmed.startsWith('data: ') && trimmed.slice(6) !== '[DONE]') {
-        try {
-          const parsed = JSON.parse(trimmed.slice(6));
-          const token = parsed.choices?.[0]?.delta?.content;
-          if (token) { fullText += token; onChunk(token); }
-        } catch (e) { /* skip */ }
-      }
-    }
-
-    abortController = null;
-    return fullText.trim() || null;
-
-  } catch (e) {
-    if (e.name === 'AbortError') {
-      // User cancelled — return whatever partial text we received
-      abortController = null;
-      return (fullText && fullText.trim()) || null;
-    }
-    // Network error or other fetch failure — return natural reply
-    abortController = null;
-    return getOfflineReply('default');
-  }
-}
 
 // Direct DOM update for streaming — avoids full re-render per token
 function updateBubbleText(msgId, text) {
@@ -7422,12 +7295,7 @@ async function psmsOpenChat(aid,rid){pmarkSMSRead();var el=document.getElementBy
 async function psmsSendMsg(){var inp=document.getElementById('psmsInp');var t=inp.value.trim();if(!t||!_psmsAgentId)return;inp.value='';var msgs=await psmsGetMsgs();msgs.push({id:'sm_'+Date.now(),role:'user',text:t,time:Date.now()});if(msgs.length>1000)msgs=msgs.slice(-1000);await psmsSaveMsgs(_psmsAgentId,_psmsRoomId,msgs);psmsOpenChat(_psmsAgentId,_psmsRoomId);psmsUpdateAllContext();if(typeof apiKey!=='undefined'&&apiKey){var ag=psmsGetAgent(_psmsAgentId);try{var sysPrompt='你是'+ag.name+'。这是短信对话，保持简短自然（1-3句话），像真人发短信一样。当前时间：'+new Date().toLocaleString('zh-CN')+'。';var wxCtx=await psmsBuildWxContext();if(wxCtx)sysPrompt+=wxCtx;var ctx=msgs.slice(-50).map(function(m){return{role:m.role==='ai'?'assistant':'user',content:m.text}});ctx.unshift({role:'system',content:sysPrompt});var fullText='';var ac=new AbortController();await callDeepSeekForSMS(ctx,function(chunk){fullText+=chunk},ac);if(fullText){msgs.push({id:'sm_'+Date.now(),role:'ai',text:fullText.trim(),time:Date.now()});if(msgs.length>1000)msgs=msgs.slice(-1000);await psmsSaveMsgs(_psmsAgentId,_psmsRoomId,msgs);psmsOpenChat(_psmsAgentId,_psmsRoomId);pnotify({title:'📱 '+ag.name,text:fullText.trim().substring(0,60)+(fullText.length>60?'...':''),icon:'💬'})}}catch(e){pnotify({title:'📱 短信发送失败',text:e.message||'网络错误，请重试',icon:'⚠️'});psmsOpenChat(_psmsAgentId,_psmsRoomId)}}}
 // ===== 统一 API 层 =====
 var _apiKeyErrorShown=false;
-function papiErrorToast(status){if(status===401||status===403){if(!_apiKeyErrorShown){_apiKeyErrorShown=true;pnotify({title:'🔑 API Key 无效',text:'请在设置中检查 Key',icon:'⚠️'});setTimeout(function(){_apiKeyErrorShown=false},10000)}return'key'}if(status===429){pnotify({title:'⏳ 请求太频繁',text:'请稍后再试',icon:'⚠️'});return'busy'}return'default'}
-async function papiFetch(messages,opts){opts=opts||{};try{var resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(opts.apiKey||apiKey)},body:JSON.stringify({model:opts.model||modelName||'deepseek-chat',messages:messages,temperature:opts.temperature||0.9,max_tokens:opts.maxTokens||400,stream:false}),signal:opts.signal&&opts.signal.signal||opts.signal});if(!resp.ok){papiErrorToast(resp.status);return{ok:false,status:resp.status,data:null}}var data=await resp.json();return{ok:true,status:200,data:data.choices&&data.choices[0]&&data.choices[0].message?data.choices[0].message.content.trim():null}}catch(e){if(e&&e.name==='AbortError'){return{ok:false,status:0,data:null,aborted:true}}return{ok:false,status:0,data:null,error:e}}}
-function papiStream(messages,onChunk,opts){return new Promise(function(resolve){opts=opts||{};fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(opts.apiKey||apiKey)},body:JSON.stringify({model:opts.model||modelName||'deepseek-chat',messages:messages,temperature:opts.temperature||0.9,max_tokens:opts.maxTokens||400,stream:true}),signal:opts.signal&&opts.signal.signal||opts.signal}).then(function(resp){if(!resp.ok){papiErrorToast(resp.status);resolve({ok:false,status:resp.status,data:null});return}var reader=resp.body.getReader();var decoder=new TextDecoder();var buffer='';var full='';function pump(){reader.read().then(function(d){if(d.done){resolve({ok:true,status:200,data:full});return}buffer+=decoder.decode(d.value,{stream:true});var lines=buffer.split('\n');buffer=lines.pop()||'';for(var i=0;i<lines.length;i++){var line=lines[i].trim();if(line.startsWith('data:')){var s=line.slice(5).trim();if(s==='[DONE]')continue;try{var j=JSON.parse(s);var c=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content;if(c){full+=c;if(onChunk)onChunk(c)}}catch(e){}}}pump()}).catch(function(e){resolve({ok:false,status:0,data:full,error:e})})}pump()}).catch(function(e){var msg=e&&e.message?e.message:''+e;resolve({ok:false,status:0,data:null,error:e,detail:msg.indexOf('Failed to fetch')>=0?'网络不通':msg.indexOf('abort')>=0?'请求被取消':msg})})})}
-async function papiRetry(messages,opts){opts=opts||{};var delays=[1000,3000,8000];var last;for(var attempt=0;attempt<=3;attempt++){var r=await papiFetch(messages,opts);if(r.ok)return r;if(r.status===401||r.status===403||r.status===429)return r;if(attempt<3){await new Promise(function(res){setTimeout(res,delays[attempt])})}last=r}return last}
-function callDeepSeekForSMS(messages,onChunk,ac){return new Promise(function(resolve,reject){var sig=ac&&ac.signal||ac;var attempt=0,useNonStream=false;function tryOnce(){attempt++;var url="https://api.deepseek.com/v1/chat/completions";var headers={"Content-Type":"application/json","Authorization":"Bearer "+apiKey};if(useNonStream||attempt>1){var body=JSON.stringify({model:modelName||"deepseek-chat",messages:messages,temperature:0.9,max_tokens:1200,stream:false});fetch(url,{method:"POST",headers:headers,body:body,signal:sig}).then(function(resp){if(!resp.ok){if(attempt<3){setTimeout(tryOnce,1000*attempt);return}reject(new Error("API error "+resp.status))}else{resp.json().then(function(data){var text=data.choices&&data.choices[0]&&data.choices[0].message?data.choices[0].message.content:"";if(text&&onChunk)onChunk(text);resolve();}).catch(reject)}}).catch(function(e){if(attempt<3){setTimeout(tryOnce,1000*attempt)}else{reject(e)}})}else{var body2=JSON.stringify({model:modelName||"deepseek-chat",messages:messages,temperature:0.9,max_tokens:400,stream:true});fetch(url,{method:"POST",headers:headers,body:body2,signal:sig}).then(function(resp){if(!resp.ok){useNonStream=true;setTimeout(tryOnce,300);return}var reader=resp.body.getReader();var decoder=new TextDecoder();var buffer="";function pump(){reader.read().then(function(d){if(d.done){resolve();return}buffer+=decoder.decode(d.value,{stream:true});var lines=buffer.split("\n");buffer=lines.pop()||"";for(var i=0;i<lines.length;i++){var line=lines[i].trim();if(line.indexOf("data:")===0){var data=line.slice(5).trim();if(data==="[DONE]")continue;try{var json=JSON.parse(data);var content=json.choices&&json.choices[0]&&json.choices[0].delta&&json.choices[0].delta.content;if(content)onChunk(content)}catch(e){}}}pump();}).catch(function(e){useNonStream=true;setTimeout(tryOnce,300)})}pump();}).catch(function(e){useNonStream=true;setTimeout(tryOnce,300)})}}tryOnce();})}async function psmsLoadMore(){var msgs=await psmsGetMsgs();var total=msgs.length;var newOffset=_psmsOffset+50;if(newOffset>=total){_psmsHasMore=false;_psmsOffset=total}else{_psmsOffset=newOffset}psmsOpenChat(_psmsAgentId,_psmsRoomId)}
-async function psmsDelMsg(i){var msgs=await psmsGetMsgs();msgs.splice(i,1);await psmsSaveMsgs(_psmsAgentId,_psmsRoomId,msgs);psmsOpenChat(_psmsAgentId,_psmsRoomId)}
+async async async function psmsDelMsg(i){var msgs=await psmsGetMsgs();msgs.splice(i,1);await psmsSaveMsgs(_psmsAgentId,_psmsRoomId,msgs);psmsOpenChat(_psmsAgentId,_psmsRoomId)}
 async function psmsOpenSettings(){var el=document.getElementById('paMessagesB');_psmsView='settings';var cfg=await psmsGetCfg();var h='<div style="padding:12px"><div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:16px">⚙️ 短信设置</div>';h+='<div style="margin-bottom:12px;font-size:13px;color:#aaa">哪些智能体可以主动发短信：</div>';var list=(agents||[]);for(var i=0;i<list.length;i++){var ag=list[i];var enabled=cfg.proactiveEnabled&&cfg.proactiveEnabled[ag.id];h+='<div class="list-item" onclick="psmsToggleAgent(\''+ag.id+'\')"><span style="font-size:24px">'+ag.avatar+'</span><span style="flex:1">'+ag.name+'</span><span id="psmsTog_'+ag.id+'" style="font-size:18px">'+(enabled?'✅':'❌')+'</span></div>'}h+='<div style="padding:12px 0;display:flex;align-items:center;gap:12px"><span style="font-size:13px;color:#aaa">检查间隔</span><select id="psmsIntv" onchange="psmsCfgSet(\'intervalMin\',parseInt(this.value))" class="pent-inp" style="flex:1">'+(function(){var o='';[15,30,60,120].forEach(function(v){o+='<option value=\"'+v+'\"'+(cfg.intervalMin===v?' selected':'')+'>每'+v+'分钟</option>'});return o})()+'</select></div>';h+='<div style="padding:12px 0;display:flex;align-items:center;gap:8px"><span style="font-size:13px;color:#aaa">免打扰</span><input type="number" id="psmsQStart" value="'+cfg.quietStart+'" min="0" max="23" class="pent-inp" style="width:50px;text-align:center" onchange="psmsCfgSet(\'quietStart\',parseInt(this.value))"><span style="color:#aaa">点 至</span><input type="number" id="psmsQEnd" value="'+cfg.quietEnd+'" min="0" max="23" class="pent-inp" style="width:50px;text-align:center" onchange="psmsCfgSet(\'quietEnd\',parseInt(this.value))"><span style="color:#aaa">点</span></div>';h+='<button class="pent-btn" style="width:100%;margin-top:12px" onclick="prMessages()">← 返回列表</button></div>';el.innerHTML=h}
 async function psmsToggleAgent(aid){psmsGetCfg().then(function(cfg){if(!cfg.proactiveEnabled)cfg.proactiveEnabled={};cfg.proactiveEnabled[aid]=!cfg.proactiveEnabled[aid];psmsSaveCfg(cfg).then(function(){var el=document.getElementById('psmsTog_'+aid);if(el)el.textContent=cfg.proactiveEnabled[aid]?'✅':'❌'})})}
 function psmsCfgSet(key,val){psmsGetCfg().then(function(cfg){cfg[key]=val;psmsSaveCfg(cfg)})}
@@ -7457,6 +7325,7 @@ function prGames(){var el=document.getElementById("paGamesB");var rem=[];try{rem
 <script src="js/games/blackjack.js"></script>
 <script src="js/games/snake.js"></script>
 <script src="js/games/minesweeper.js"></script>
+<script src="js/api.js"></script>
 
 <!-- ===== GAME PANEL ===== -->
 <div class="settings-overlay" id="gamePanel" onclick="hideGamePanel()">
