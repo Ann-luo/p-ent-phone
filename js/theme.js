@@ -1,0 +1,7 @@
+// theme
+
+var pTHEMES={blue:'linear-gradient(180deg,#1a1a2e,#16213e,#0f3460) center/cover',dark:'linear-gradient(180deg,#0d0d0d,#161616,#222) center/cover',light:'linear-gradient(180deg,#e9edf2,#d9dfe6,#c6cfd9) center/cover'};
+
+function psetTheme(name){localStorage.setItem('pent_theme',name);var bg=pTHEMES[name]||pTHEMES.blue;_pdt.style.background=bg;var dark=name==='light';var els=document.querySelectorAll('.pdt-page .papp-label,.pdock .papp-label');for(var i=0;i<els.length;i++){els[i].style.color=dark?'#333':'#fff'}prSettings();pnotify({title:'🎨 主题已切换',text:name==='blue'?'深蓝':name==='dark'?'暗黑':'浅色',icon:'🎨'})}
+
+function papplyTheme(){var t=localStorage.getItem('pent_theme');if(t&&t!=='blue'){psetTheme(t)}}
