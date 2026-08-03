@@ -56,7 +56,8 @@
         <button onclick="document.getElementById('messages').scrollTo({top:0,behavior:'smooth'})" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.35);color:#fff;font-size:12px;cursor:pointer;">⬆</button>
         <button onclick="var m=document.getElementById('messages');m.scrollTop=m.scrollHeight;" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.35);color:#fff;font-size:12px;cursor:pointer;">⬇</button>
       </div>
-      <script>
+      <script src="js/storage.js"></script>
+<script>
         var _scrollBtnsTimer = null;
         var _showScrollBtns = function() {
           var s = document.getElementById('scrollBtns');
@@ -943,38 +944,6 @@ function idbOpen() {
       console.error('IDB open error', e.target.error);
       reject(e.target.error);
     };
-  });
-}
-
-function idbGet(key) {
-  return idbOpen().then(function(db) {
-    return new Promise(function(resolve) {
-      var tx = db.transaction(IDB_STORE, 'readonly');
-      var req = tx.objectStore(IDB_STORE).get(key);
-      req.onsuccess = function() { resolve(req.result ? req.result.value : undefined); };
-      req.onerror = function() { resolve(undefined); };
-    });
-  });
-}
-
-function idbPut(key, value) {
-  return idbOpen().then(function(db) {
-    return new Promise(function(resolve, reject) {
-      var tx = db.transaction(IDB_STORE, 'readwrite');
-      var req = tx.objectStore(IDB_STORE).put({ key: key, value: value });
-      req.onsuccess = function() { resolve(); };
-      req.onerror = function() { reject(req.error); };
-    });
-  });
-}
-
-function idbDelete(key) {
-  return idbOpen().then(function(db) {
-    return new Promise(function(resolve) {
-      var tx = db.transaction(IDB_STORE, 'readwrite');
-      tx.objectStore(IDB_STORE).delete(key);
-      tx.oncomplete = function() { resolve(); };
-    });
   });
 }
 
