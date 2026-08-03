@@ -1,0 +1,4 @@
+备份/
+*.apk
+.DS_Store
+Thumbs.db
