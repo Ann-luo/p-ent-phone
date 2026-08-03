@@ -1,5 +1,3 @@
-// Export/Import helpers
-
 function saveFileToDevice(fileName, content, mimeType) {
   var safeName = fileName
     .replace(/[\\/:*?"<>|]/g, '_')
@@ -46,7 +44,5 @@ function saveFileToDevice(fileName, content, mimeType) {
   showToast('已下载：' + safeName + ' ✅');
   return true;
 }
-
 function pbackupDownload(json,fname){var blob=new Blob([json],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=fname;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url)},1000)}
-
 function pbackupShare(json,fname){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center';ov.onclick=function(e){if(e.target===ov)ov.remove()};var sheet=document.createElement('div');sheet.style.cssText='background:#1c1c1e;border-radius:20px 20px 0 0;padding:8px 20px max(20px,env(safe-area-inset-bottom));width:100%;max-width:430px';sheet.innerHTML='<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);margin:8px auto 16px"></div><div style="color:#fff;font-size:16px;font-weight:600;text-align:center;margin-bottom:4px">💾 备份完成</div><div style="color:#888;font-size:12px;text-align:center;margin-bottom:16px;word-break:break-all">'+fname+' · '+(json.length/1024).toFixed(0)+'KB</div>';function row(icon,label,fn){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;padding:14px 12px;gap:12px;color:#fff;font-size:15px;cursor:pointer;border-radius:12px';r.innerHTML='<span style="font-size:22px">'+icon+'</span><span>'+label+'</span>';r.onclick=function(){try{fn()}catch(e){pnotify({title:"导出失败",text:e.message||"未知错误",icon:"⚠️"})}setTimeout(function(){ov.remove()},300)};sheet.appendChild(r)}row('📤','导出并分享（微信同款）',function(){if(typeof saveFileToDevice==='function'){saveFileToDevice(fname,json,'application/json;charset=utf-8')}else{pbackupDownload(json,fname)}});row('📋','复制备份内容',function(){try{navigator.clipboard.writeText(json).then(function(){pnotify({title:'📋 已复制',text:'粘贴到备忘录保存',icon:'📋'})}).catch(function(){pnotify({title:'📋 复制失败',icon:'⚠️'})})}catch(e){pnotify({title:'📋 复制失败',icon:'⚠️'})}});var cancel=document.createElement('div');cancel.textContent='取消';cancel.style.cssText='text-align:center;padding:14px;color:#888;font-size:15px;cursor:pointer;border-radius:12px;margin-top:4px;background:rgba(255,255,255,.05)';cancel.onclick=function(){ov.remove()};sheet.appendChild(cancel);ov.appendChild(sheet);document.body.appendChild(ov)}
