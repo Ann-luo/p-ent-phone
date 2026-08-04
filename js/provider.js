@@ -4,13 +4,13 @@
 
 var PROVIDERS = {
   deepseek:  { name:'DeepSeek',     base:'https://api.deepseek.com/v1',                            models:['deepseek-v4-flash','deepseek-v4-pro'],                         fetchModels:false, region:'cn' },
-  qwen:      { name:'通义千问',     base:'https://dashscope.aliyuncs.com/compatible-mode/v1',       models:['qwen-turbo','qwen-plus','qwen-max','qwen-long'],               fetchModels:false, region:'cn' },
-  wenxin:    { name:'百度文心',     base:'https://qianfan.baidubce.com/v2',                         models:['ernie-4.0-turbo-8k','ernie-3.5-8k'],                           fetchModels:false, region:'cn' },
+  qwen:      { name:'通义千问',     base:'https://dashscope.aliyuncs.com/compatible-mode/v1',       models:['qwen3.7-max','qwen3.7-plus','qwen3.7-flash'],                  fetchModels:false, region:'cn' },
+  wenxin:    { name:'百度文心',     base:'https://qianfan.baidubce.com/v2',                         models:['ernie-4.5-turbo-128k','ernie-5.0'],                             fetchModels:false, region:'cn' },
   doubao:    { name:'字节豆包',     base:'https://ark.cn-beijing.volces.com/api/v3',                models:['doubao-pro-32k','doubao-lite-32k'],                            fetchModels:false, region:'cn' },
   kimi:      { name:'月之暗面 Kimi',base:'https://api.moonshot.cn/v1',                              models:['moonshot-v1-8k','moonshot-v1-32k','moonshot-v1-128k'],         fetchModels:true,  region:'cn' },
   glm:       { name:'智谱 GLM',     base:'https://open.bigmodel.cn/api/paas/v4',                    models:['glm-4-flash','glm-4-plus','glm-4-long'],                       fetchModels:false, region:'cn' },
   xunfei:    { name:'讯飞星火',     base:'https://spark-api-open.xf-yun.com/v1',                    models:['spark-lite','spark-pro','spark-max'],                          fetchModels:false, region:'cn' },
-  minimax:   { name:'MiniMax',      base:'https://api.minimax.chat/v1',                             models:['abab6.5s-chat'],                                               fetchModels:false, region:'cn' },
+  minimax:   { name:'MiniMax',      base:'https://api.minimax.io/v1',                               models:['MiniMax-M3','MiniMax-M2.5'],                                   fetchModels:false, region:'cn' },
   openai:    { name:'GPT',          base:'https://api.openai.com/v1',                               models:['gpt-5','gpt-5-nano','gpt-4.1'],                                fetchModels:true,  region:'intl' },
   claude:    { name:'Claude',       base:'https://api.anthropic.com/v1',                            models:['claude-sonnet-5','claude-opus-5','claude-haiku-4-5'],          fetchModels:false, region:'intl' },
   gemini:    { name:'Google Gemini',base:'https://generativelanguage.googleapis.com/v1beta/openai',  models:['gemini-2.5-flash','gemini-2.5-pro'],                           fetchModels:false, region:'intl' },
