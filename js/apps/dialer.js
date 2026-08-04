@@ -1,3 +1,0 @@
-var _pdnum='';function prDialer(){document.getElementById('paDialerB').innerHTML='<div class="pent-dial-d" id="pdd">'+(_pdnum||'输入号码')+'</div><div class="pent-dial-g">'+['1','2','3','4','5','6','7','8','9','*','0','#'].map(function(n){return'<button onclick="pdp(\''+n+'\')">'+n+'</button>'}).join('')+'</div><div style="text-align:center;margin-top:16px"><div onclick="pdcall()" style="display:inline-block;width:60px;height:60px;border-radius:50%;background:#34c759;line-height:60px;font-size:28px;cursor:pointer">📞</div></div>'}
-function pdp(n){_pdnum+=n;var el=document.getElementById('pdd');if(el)el.textContent=_pdnum}
-function pdcall(){if(_pdnum){pnotify({title:'📞 正在呼叫',text:_pdnum,icon:'📞'});_pdnum='';prDialer()}}
