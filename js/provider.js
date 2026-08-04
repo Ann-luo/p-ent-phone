@@ -3,7 +3,7 @@
 // Claude 使用 Messages API（/v1/messages + x-api-key + content blocks）
 
 var PROVIDERS = {
-  deepseek:  { name:'DeepSeek',     base:'https://api.deepseek.com/v1',                            models:['deepseek-chat','deepseek-reasoner'],                            fetchModels:false, region:'cn' },
+  deepseek:  { name:'DeepSeek',     base:'https://api.deepseek.com/v1',                            models:['deepseek-v4-flash','deepseek-v4-pro'],                         fetchModels:false, region:'cn' },
   qwen:      { name:'通义千问',     base:'https://dashscope.aliyuncs.com/compatible-mode/v1',       models:['qwen-turbo','qwen-plus','qwen-max','qwen-long'],               fetchModels:false, region:'cn' },
   wenxin:    { name:'百度文心',     base:'https://qianfan.baidubce.com/v2',                         models:['ernie-4.0-turbo-8k','ernie-3.5-8k'],                           fetchModels:false, region:'cn' },
   doubao:    { name:'字节豆包',     base:'https://ark.cn-beijing.volces.com/api/v3',                models:['doubao-pro-32k','doubao-lite-32k'],                            fetchModels:false, region:'cn' },
@@ -19,7 +19,7 @@ var PROVIDERS = {
 
 var providerConfigs = [];       // [{id, name, apiKey, baseUrl, model, customModels:[]}]
 var activeProviderId = 'deepseek';
-var activeModelId = 'deepseek-chat';
+var activeModelId = 'deepseek-v4-flash';
 
 // Legacy globals synced after load/save
 function psyncGlobals() {
