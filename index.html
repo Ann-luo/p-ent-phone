@@ -875,6 +875,7 @@
 <script src="js/apps/settings.js"></script>
 <script src="js/apps/store.js"></script>
 <script src="js/apps/clock.js"></script>
+<script src="js/apps/calc.js"></script>
 <script>
 // ╔══════════════════════════════════════════════════════════════╗
 // ║  模块 A: 数据层 (Data & Storage)                           ║
@@ -7298,8 +7299,8 @@ setTimeout(function(){pnotify({title:'👋 欢迎使用',text:'桌面已就绪�
 
 
 function delAl(i){_pAlarms.splice(i,1);pctRender()}
-var _pce='';function prCalc(){document.getElementById('paCalcB').innerHTML='<div class="pent-calc-d" id="pcd">0</div><div class="pent-calc-g">'+['C','⌫','%','/','7','8','9','*','4','5','6','-','1','2','3','+','0','00','.','='].map(function(b){var cls=b==='='?'ceq':('+-*/%'.indexOf(b)>=0?'cop':'');return'<button class="'+cls+'" onclick="pcp(\''+b+'\')">'+b+'</button>'}).join('')+'</div>';_pce=''}
-function pcp(k){if(k==='C'){_pce='';document.getElementById('pcd').textContent='0'}else if(k==='⌫'){_pce=_pce.slice(0,-1);document.getElementById('pcd').textContent=_pce||'0'}else if(k==='='){try{_pce=eval(_pce).toString();document.getElementById('pcd').textContent=_pce}catch(e){document.getElementById('pcd').textContent='错误';_pce=''}}else{_pce+=k;document.getElementById('pcd').textContent=_pce}}
+
+
 
 
 
