@@ -10,8 +10,6 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div style="display:flex;justify-content:center;align-items:center;min-height:100dvh;overflow:hidden">
-
 
 <div class="phone" id="app">
   <!-- Status Bar -->
@@ -58,7 +56,7 @@
         <button onclick="document.getElementById('messages').scrollTo({top:0,behavior:'smooth'})" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.35);color:#fff;font-size:12px;cursor:pointer;">⬆</button>
         <button onclick="var m=document.getElementById('messages');m.scrollTop=m.scrollHeight;" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.35);color:#fff;font-size:12px;cursor:pointer;">⬇</button>
       </div>
-      <script src="js/storage.js"></script>
+      
 <script>
         var _scrollBtnsTimer = null;
         var _showScrollBtns = function() {
@@ -861,13 +859,13 @@
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--  SECTION 2: JavaScript 逻辑                                      -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<script src="js/notifications.js"></script>
-<script src="js/export.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/weather.js"></script>
-<script src="js/wallet.js"></script>
-<script src="js/note.js"></script>
-<script src="js/apps/media.js"></script>
+
+
+
+
+
+
+
 <script>
 // ╔══════════════════════════════════════════════════════════════╗
 // ║  模块 A: 数据层 (Data & Storage)                           ║
@@ -5709,9 +5707,7 @@ function exportAsImage() {
     sb.textContent = '💾 保存 HTML';
     sb.style.cssText = 'padding:10px 24px;border-radius:20px;border:none;background:#07c160;color:#fff;font-size:14px;cursor:pointer;';
     sb.onclick = function() {
-      var fullHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>聊天记录</title></head><body>' + document.getElementById('exportContent').innerHTML + '
-</div>
-</body></html>';
+      var fullHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>聊天记录</title></head><body>' + document.getElementById('exportContent').innerHTML + '</body></html>';
       saveFileToDevice('聊天记录_' + new Date().toISOString().slice(0,10) + '.html', fullHtml, 'text/html;charset=utf-8');
     };
     bar.appendChild(sb);
