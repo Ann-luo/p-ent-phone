@@ -568,7 +568,7 @@
       <div class="divider"></div>
 
       <div class="field">
-        <label>🔑 DeepSeek API Key</label>
+        <label id="apiKeyLabel">🔑 DeepSeek API Key</label>
         <input id="apiKeyInput" type="password" placeholder="sk-..." autocomplete="off">
       </div>
       <div class="field">
@@ -867,6 +867,7 @@
 <script src="js/apps/music.js"></script>
 <script src="js/apps/memo.js"></script>
 <script src="js/apps/calendar.js"></script>
+<script src="js/apps/model-manager.js"></script>
 <script src="js/apps/dialer.js"></script>
 <script src="js/apps/settings.js"></script>
 <script src="js/apps/store.js"></script>
@@ -6622,9 +6623,9 @@ function toggleSettings() {
   overlay.classList.toggle('show');
   if (overlay.classList.contains('show')) {
     updateAgentSelector();
-    document.getElementById('apiKeyInput').value = apiKey;
+    var pk6=pgetActive();var al=document.getElementById('apiKeyLabel');if(al)al.textContent='🔑 '+pk6.name+' API Key';document.getElementById('apiKeyInput').value=pk6.apiKey;
     document.getElementById('personaInput').value = personaExtra;
-    document.getElementById('modelSelect').value = modelName;
+    var ms4=document.getElementById('modelSelect');ms4.innerHTML='';var p4=pgetActive();var def4=PROVIDERS[p4?p4.id:'deepseek'];var models4=def4?def4.models.slice():[];if(p4&&p4.customModels)models4=models4.concat(p4.customModels);for(var mi4=0;mi4<models4.length;mi4++){var o4=document.createElement('option');o4.value=models4[mi4];o4.textContent=models4[mi4];if(models4[mi4]===activeModelId)o4.selected=true;ms4.appendChild(o4)}
     renderMemoryList();
     // Avatar preview
     var agent = getCurrentAgent();
@@ -6952,9 +6953,9 @@ function toggleMemAutoClean() {
 }
 
 function saveSettings() {
-  apiKey = document.getElementById('apiKeyInput').value.trim();
+  var pk7=pgetActive();if(pk7)pk7.apiKey=document.getElementById('apiKeyInput').value.trim();apiKey=pk7?pk7.apiKey:'';
   personaExtra = document.getElementById('personaInput').value.trim();
-  modelName = document.getElementById('modelSelect').value;
+  var msVal2=document.getElementById('modelSelect').value;if(msVal2){activeModelId=msVal2;modelName=msVal2;var pk8=pgetActive();if(pk8)pk8.model=msVal2;psave();}
 
   // Temperature & Top P
   temperature = parseFloat(document.getElementById('tempSlider').value) || 0.92;
