@@ -11,10 +11,10 @@ var PROVIDERS = {
   glm:       { name:'智谱 GLM',     base:'https://open.bigmodel.cn/api/paas/v4',                    models:['glm-4-flash','glm-4-plus','glm-4-long'],                       fetchModels:false, region:'cn' },
   xunfei:    { name:'讯飞星火',     base:'https://spark-api-open.xf-yun.com/v1',                    models:['spark-lite','spark-pro','spark-max'],                          fetchModels:false, region:'cn' },
   minimax:   { name:'MiniMax',      base:'https://api.minimax.chat/v1',                             models:['abab6.5s-chat'],                                               fetchModels:false, region:'cn' },
-  openai:    { name:'GPT',          base:'https://api.openai.com/v1',                               models:['gpt-4o','gpt-4o-mini','o4-mini'],                              fetchModels:true,  region:'intl' },
-  claude:    { name:'Claude',       base:'https://api.anthropic.com/v1',                            models:['claude-sonnet-4-20250514','claude-haiku-3-5-20251001'],        fetchModels:false, region:'intl' },
+  openai:    { name:'GPT',          base:'https://api.openai.com/v1',                               models:['gpt-5','gpt-5-nano','gpt-4.1'],                                fetchModels:true,  region:'intl' },
+  claude:    { name:'Claude',       base:'https://api.anthropic.com/v1',                            models:['claude-sonnet-5','claude-opus-5','claude-haiku-4-5'],          fetchModels:false, region:'intl' },
   gemini:    { name:'Google Gemini',base:'https://generativelanguage.googleapis.com/v1beta/openai',  models:['gemini-2.5-flash','gemini-2.5-pro'],                           fetchModels:false, region:'intl' },
-  mistral:   { name:'Mistral',      base:'https://api.mistral.ai/v1',                               models:['mistral-large-latest','mistral-small-latest'],                 fetchModels:true,  region:'intl' }
+  mistral:   { name:'Mistral',      base:'https://api.mistral.ai/v1',                               models:['mistral-medium-3.5','mistral-small-4'],                        fetchModels:true,  region:'intl' }
 };
 
 var providerConfigs = [];       // [{id, name, apiKey, baseUrl, model, customModels:[]}]
