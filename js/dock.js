@@ -76,23 +76,15 @@ function pdockSwapMenu(dockId) {
   document.body.appendChild(ov);
 }
 
-var _pDockTimer = null, _pDockStartX = 0, _pDockStartY = 0;
+var _pDockTimer = null;
 function pdockLongPress(e, dockId) {
   e.stopPropagation();
   clearTimeout(_pDockTimer);
-  _pDockStartX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX || 0;
-  _pDockStartY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY || 0;
   _pDockTimer = setTimeout(function() { pdockSwapMenu(dockId); }, 500);
 }
-function pdockLongCancel(e) {
-  if (_pDockTimer) {
-    var ex = (e.touches && e.touches[0]) ? e.touches[0].clientX : (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : e.clientX || 0;
-    var ey = (e.touches && e.touches[0]) ? e.touches[0].clientY : (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : e.clientY || 0;
-    if (Math.abs(ex - _pDockStartX) > 10 || Math.abs(ey - _pDockStartY) > 10) {
-      clearTimeout(_pDockTimer);
-    }
-  }
+function pdockLongCancel() {
+  clearTimeout(_pDockTimer);
 }
-document.addEventListener('mouseup', function() { clearTimeout(_pDockTimer); });
 document.addEventListener('touchend', pdockLongCancel, { passive: true });
 document.addEventListener('touchmove', pdockLongCancel, { passive: true });
+document.addEventListener('mouseup', pdockLongCancel);
