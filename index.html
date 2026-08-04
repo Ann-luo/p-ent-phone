@@ -6624,9 +6624,9 @@ function toggleSettings() {
   overlay.classList.toggle('show');
   if (overlay.classList.contains('show')) {
     updateAgentSelector();
-    document.getElementById('apiKeyInput').value = apiKey;
+    document.getElementById('apiKeyInput').value = pgetActive().apiKey;
     document.getElementById('personaInput').value = personaExtra;
-    document.getElementById('modelSelect').value = modelName;
+    var ms2=document.getElementById('modelSelect');ms2.innerHTML='';var p2=pgetActive();var def2=PROVIDERS[p2?p2.id:'deepseek'];var models2=def2?def2.models.slice():[];if(p2&&p2.customModels)models2=models2.concat(p2.customModels);for(var mi=0;mi<models2.length;mi++){ms2.innerHTML+='<option value="'+models2[mi]+'"'+(models2[mi]===activeModelId?' selected':'')+'>'+models2[mi]+'</option>'};modelName=activeModelId;
     renderMemoryList();
     // Avatar preview
     var agent = getCurrentAgent();
@@ -6954,9 +6954,9 @@ function toggleMemAutoClean() {
 }
 
 function saveSettings() {
-  apiKey = document.getElementById('apiKeyInput').value.trim();
+  var pk3=pgetActive();if(pk3)pk3.apiKey=document.getElementById('apiKeyInput').value.trim();apiKey=pk3?pk3.apiKey:'';
   personaExtra = document.getElementById('personaInput').value.trim();
-  modelName = document.getElementById('modelSelect').value;
+  var msVal=document.getElementById('modelSelect').value;if(msVal){activeModelId=msVal;modelName=msVal;var pk4=pgetActive();if(pk4)pk4.model=msVal;}
 
   // Temperature & Top P
   temperature = parseFloat(document.getElementById('tempSlider').value) || 0.92;
