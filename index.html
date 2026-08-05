@@ -568,7 +568,7 @@
 
       <div class="divider"></div>
 
-<div class="field" style="text-align:center;padding:8px 0"><span onclick="toggleSettings();popenApp('paSettings');setTimeout(function(){prModelManager()},300)" style="color:#4da3ff;font-size:13px;cursor:pointer">🤖 管理 AI 模型与 API Key →</span></div>
+<div class="field" style="text-align:center;padding:8px 0"><span onclick="toggleSettings();_pdt.classList.remove('show');document.getElementById('app').classList.add('pent-show');document.getElementById('paSettings').classList.add('show');document.getElementById('pnavbar').classList.remove('show');_phomeDot.classList.add('show');_pcurApp='paSettings';setTimeout(function(){prModelManager()},200)" style="color:#4da3ff;font-size:13px;cursor:pointer">🤖 管理 AI 模型与 API Key →</span></div>
       <div class="field">
         <label>🧠 额外人设补充 <span style="font-size:11px;color:#999;">（对当前智能体人设做微调）</span></label>
         <textarea id="personaInput" placeholder="比如：语气更温柔一点、多说鼓励的话…"></textarea>
