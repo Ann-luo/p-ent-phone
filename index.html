@@ -569,11 +569,8 @@
       <div class="divider"></div>
 
       /div>
-      <div class="field">
-        <label>🤖 AI 模型</label>
-        <select id="modelSelect" style="width:100%;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#fff;font-size:13px"></select>
       </div>
-      <div class="field" style="text-align:center;padding:8px 0"><a href="#" onclick="event.preventDefault();toggleSettings();prModelManager()" style="color:#4da3ff;font-size:13px;text-decoration:none">🤖 管理 AI 模型与 API Key →</a></div>
+      <div class="field" style="text-align:center;padding:8px 0"><span onclick="toggleSettings();popenApp('paSettings');setTimeout(function(){prModelManager()},300)" style="color:#4da3ff;font-size:13px;cursor:pointer">🤖 管理 AI 模型与 API Key →</span></div>
       <div class="field">
         <label>🧠 额外人设补充 <span style="font-size:11px;color:#999;">（对当前智能体人设做微调）</span></label>
         <textarea id="personaInput" placeholder="比如：语气更温柔一点、多说鼓励的话…"></textarea>
