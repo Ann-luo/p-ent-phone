@@ -2,12 +2,8 @@
 async function prReverse() {
   var el = document.getElementById('paReverseB');
   el.style.overflow = 'hidden';
-  var sel = '<select id="prevAgent" style="font-size:13px;padding:4px 8px;background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;max-width:140px">';
-  for (var i = 0; i < (agents || []).length; i++) {
-    sel += '<option value="' + agents[i].id + '"' + (agents[i].id === activeAgentId ? ' selected' : '') + '>' + agents[i].avatar + ' ' + agents[i].name + '</option>';
-  }
-  sel += '</select>';
-  el.innerHTML = '<div style="display:flex;flex-direction:column;height:100%"><div style="display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0"><span style="color:#aaa;font-size:13px">🔍</span>' + sel + '</div><div id="prevMsgs" style="flex:1;overflow-y:auto;padding:8px"></div><div style="display:flex;gap:8px;padding:8px;padding-bottom:50px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0"><button class="pent-btn" id="prevBtn" style="flex:1" onclick="prevAsk()">🔍 开始反查</button></div></div>';
+  var ag = (agents || []).find(function(a) { return a.id === activeAgentId; }) || { name: 'AI', avatar: '🤖' };
+  el.innerHTML = '<div style="display:flex;flex-direction:column;height:100%"><div style="display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0"><span style="color:#aaa;font-size:13px">🔍</span><span style="color:#fff;font-size:14px">' + ag.avatar + ' ' + ag.name + '</span></div><div id="prevMsgs" style="flex:1;overflow-y:auto;padding:8px"></div><div style="display:flex;gap:8px;padding:8px;padding-bottom:50px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0"><button class="pent-btn" id="prevBtn" style="flex:1" onclick="prevAsk()">🔍 开始反查</button></div></div>';
 }
 
 var _prevRunning = false;
@@ -19,8 +15,7 @@ async function prevAsk() {
   var msgsEl = document.getElementById('prevMsgs');
   if (msgsEl) msgsEl.innerHTML += '<div style="color:#888;text-align:center;padding:8px;font-size:12px">⏳ 正在收集数据...</div>';
 
-  var sel = document.getElementById('prevAgent');
-  var aid = sel ? sel.value : activeAgentId;
+  var aid = activeAgentId;
   var rid = activeRoomId;
   var data = await pchkCollect(aid, rid);
 
@@ -43,7 +38,7 @@ async function prevAsk() {
 
     if (fullText) {
       if (msgsEl) {
-        msgsEl.innerHTML += '<div style="display:flex;flex-direction:column;align-items:flex-start;margin:8px 0"><span style="font-size:10px;color:#888">🔍 ' + ag.name + ' 的反查结果</span><div style="max-width:90%;padding:10px 14px;border-radius:2px 12px 12px 12px;background:rgba(255,255,255,.12);color:#ddd;font-size:14px;line-height:1.6;word-break:break-word">' + fullText.trim().replace(/\n/g, '<br>') + '</div></div>';
+        msgsEl.innerHTML += '<div style="display:flex;flex-direction:column;align-items:flex-start;margin:8px 0"><span style="font-size:10px;color:#888">🔍 ' + ag.name + ' 对我的了解</span><div style="max-width:90%;padding:10px 14px;border-radius:2px 12px 12px 12px;background:rgba(255,255,255,.12);color:#ddd;font-size:14px;line-height:1.6;word-break:break-word">' + fullText.trim().replace(/\n/g, '<br>') + '</div></div>';
         msgsEl.scrollTop = msgsEl.scrollHeight;
       }
       // Post to Phone chat
