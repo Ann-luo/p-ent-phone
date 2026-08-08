@@ -2,12 +2,34 @@
 async function prReverse() {
   var el = document.getElementById('paReverseB');
   el.style.overflow = 'hidden';
-  var sel = '<select id="prevAgent" style="font-size:13px;padding:4px 8px;background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;max-width:140px">';
+  var sel = '<select id="prevAgent" onchange="prevUpdateRooms()" style="font-size:13px;padding:4px 8px;background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;max-width:140px">';
   for (var i = 0; i < (agents || []).length; i++) {
     sel += '<option value="' + agents[i].id + '"' + (agents[i].id === activeAgentId ? ' selected' : '') + '>' + agents[i].avatar + ' ' + agents[i].name + '</option>';
   }
   sel += '</select>';
-  el.innerHTML = '<div style="display:flex;flex-direction:column;height:100%"><div style="display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0"><span style="color:#aaa;font-size:13px">🔍</span>' + sel + '</div><div id="prevMsgs" style="flex:1;overflow-y:auto;padding:8px"></div><div style="display:flex;gap:8px;padding:8px;padding-bottom:50px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0"><button class="pent-btn" id="prevBtn" style="flex:1" onclick="prevAsk()">🔍 开始反查</button></div></div>';
+  var rsel = '<select id="prevRoom" style="font-size:12px;padding:4px 6px;background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;max-width:100px">';
+  var rms = (rooms && rooms[activeAgentId]) ? rooms[activeAgentId] : [{ id: 'default', name: '日常' }];
+  for (var j = 0; j < rms.length; j++) {
+    rsel += '<option value="' + rms[j].id + '"' + (rms[j].id === activeRoomId ? ' selected' : '') + '>' + rms[j].name + '</option>';
+  }
+  rsel += '</select>';
+  el.innerHTML = '<div style="display:flex;flex-direction:column;height:100%"><div style="display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0"><span style="color:#aaa;font-size:13px">🔍</span>' + sel + rsel + '</div><div id="prevMsgs" style="flex:1;overflow-y:auto;padding:8px"></div><div style="display:flex;gap:8px;padding:8px;padding-bottom:50px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0"><button class="pent-btn" id="prevBtn" style="flex:1" onclick="prevAsk()">🔍 开始反查</button></div></div>';
+}
+
+function prevUpdateRooms() {
+  var sel = document.getElementById('prevAgent');
+  var aid = sel ? sel.value : activeAgentId;
+  var rsel = document.getElementById('prevRoom');
+  if (!rsel) return;
+  rsel.innerHTML = '';
+  var rms = (rooms && rooms[aid]) ? rooms[aid] : [{ id: 'default', name: '日常' }];
+  for (var j = 0; j < rms.length; j++) {
+    var o = document.createElement('option');
+    o.value = rms[j].id;
+    o.textContent = rms[j].name;
+    if (rms[j].id === activeRoomId) o.selected = true;
+    rsel.appendChild(o);
+  }
 }
 
 var _prevRunning = false;
@@ -21,7 +43,8 @@ async function prevAsk() {
 
   var sel = document.getElementById('prevAgent');
   var aid = sel ? sel.value : activeAgentId;
-  var rid = activeRoomId;
+  var rsel = document.getElementById('prevRoom');
+  var rid = rsel ? rsel.value : activeRoomId;
   var data = await pchkCollect(aid, rid);
 
   if (msgsEl) {
