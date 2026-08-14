@@ -882,8 +882,8 @@ const ACTIVE_AGENT_KEY = 'pent_active_agent';
 const GLOBAL_SETTINGS_KEY = 'bles_global_settings';
 
 // Agents registry: [{ id, name, avatar, personaTemplate, createdAt }]
-let agents = [];
-let activeAgentId = 'bres';
+var agents = [];
+var activeAgentId = 'bres';
 
 // Default persona template (generic) (preserved as migration source)
 const DEFAULT_BRES_PERSONA = `你是一个友好的AI助手。你温和、体贴、善于倾听。
@@ -911,14 +911,14 @@ var _isApp = (function() {
 document.addEventListener('plusready', function() { _isApp = true; });
 
 // ── Dynamic key helper: per-agent + per-room keys ──────────────────
-let activeRoomId = 'default';
-let rooms = {}; // { agentId: [{ id, name, createdAt }] } — room registry
-let todos = []; // { id, text, done, createdAt, source ('user'|'ai'), completedAt }
-let playlist = []; // { id, title, url, platform, thumbnail, addedBy, addedAt }
-let transactions = []; // { id, type, amount, balance, description, relatedMsgId, time }
-let giftInventory = []; // { giftId, name, icon, qty } — purchased gifts not yet used
-let giftHistory = []; // { giftId, name, icon, time, bonus } — sent gift log
-let starredMessages = []; // { msgId } — user-starred message IDs
+var activeRoomId = 'default';
+var rooms = {}; // { agentId: [{ id, name, createdAt }] } — room registry
+var todos = []; // { id, text, done, createdAt, source ('user'|'ai'), completedAt }
+var playlist = []; // { id, title, url, platform, thumbnail, addedBy, addedAt }
+var transactions = []; // { id, type, amount, balance, description, relatedMsgId, time }
+var giftInventory = []; // { giftId, name, icon, qty } — purchased gifts not yet used
+var giftHistory = []; // { giftId, name, icon, time, bonus } — sent gift log
+var starredMessages = []; // { msgId } — user-starred message IDs
 
 function agentKey(baseKey) {
   return 'agent_' + activeAgentId + '_' + baseKey;
@@ -932,8 +932,8 @@ function roomKey() {
 // ═══════════════════════════════════════════════════════════════════
 const IDB_NAME = 'pent_db_v1';
 const IDB_STORE = 'data';
-let _db = null;
-let _dbReady = false;
+var _db = null;
+var _dbReady = false;
 
 function idbOpen() {
   return new Promise(function(resolve, reject) {
@@ -1118,75 +1118,75 @@ function getAgentAvatar() {
   return getCurrentAgent().avatar || '🤖';
 }
 
-let messages = [];
-let moodValue = 55;
-let affectionLevel = 1;
-let apiKey = '';
-let personaExtra = '';
-let modelName = 'deepseek-v4-flash';
-let temperature = 0.92;
-let topP = 1.0;
-let isSending = false;
-let abortController = null;
-let silenceTimer = null;
-let diaryEntries = [];
-let diaryConfig = { enabled: true, autoCleanDays: 30, autoClean: true, frequency: 'medium' };
-let diaryCounter = 0;
-let diaryWriting = false;
+var messages = [];
+var moodValue = 55;
+var affectionLevel = 1;
+var apiKey = '';
+var personaExtra = '';
+var modelName = 'deepseek-v4-flash';
+var temperature = 0.92;
+var topP = 1.0;
+var isSending = false;
+var abortController = null;
+var silenceTimer = null;
+var diaryEntries = [];
+var diaryConfig = { enabled: true, autoCleanDays: 30, autoClean: true, frequency: 'medium' };
+var diaryCounter = 0;
+var diaryWriting = false;
 // Lock screen
-let lockConfig = { enabled: false, mode: 'pin', pin: '', question: '', answer: '', wallpaper: '', autoLockMinutes: 5 };
-let lockActive = false;
-let lockTimer = null;
-let lockFailedAttempts = 0;
+var lockConfig = { enabled: false, mode: 'pin', pin: '', question: '', answer: '', wallpaper: '', autoLockMinutes: 5 };
+var lockActive = false;
+var lockTimer = null;
+var lockFailedAttempts = 0;
 const LOCK_KEY = 'bles_lock_config';
 const LOCK_WALLPAPER_KEY = 'bles_lock_wallpaper';
 // Silent regret tracking
-let _lastMsgSilenced = false;
-let _lastSilenceTime = 0;
+var _lastMsgSilenced = false;
+var _lastSilenceTime = 0;
 
 // Memory store: [{ id, key, value, time }]
-let memoryStore = [];
-let memoryConfig = { autoCleanEnabled: true, cleanDays: 7 };
+var memoryStore = [];
+var memoryConfig = { autoCleanEnabled: true, cleanDays: 7 };
 
 // User profile
-let userProfile = { name: '我', avatar: '', signature: '' };
-let bresProfile = { avatar: '' };
+var userProfile = { name: '我', avatar: '', signature: '' };
+var bresProfile = { avatar: '' };
 
 // Moments
-let moments = [];
-let momentsConfig = { autoEnabled: false, intervalMinutes: 30, lastAutoTime: 0, autoCleanEnabled: true };
-let momentsUnread = 0;
+var moments = [];
+var momentsConfig = { autoEnabled: false, intervalMinutes: 30, lastAutoTime: 0, autoCleanEnabled: true };
+var momentsUnread = 0;
 
 // Balance
-let balance = 1000;
+var balance = 1000;
 
 // Dark mode
-let darkMode = false;
+var darkMode = false;
 
 // Check-in
-let checkinData = { lastDate: '', streak: 0 };
+var checkinData = { lastDate: '', streak: 0 };
 
 // Proactive messaging
-let proactiveConfig = { enabled: true, lastProactiveTime: 0 };
+var proactiveConfig = { enabled: true, lastProactiveTime: 0 };
 
 // Message reactions
-let msgReactions = {};
+var msgReactions = {};
 
 // Red packet pending data
-let pendingRedPacketMsgId = null;
-let pendingRedPacketId = null;
+var pendingRedPacketMsgId = null;
+var pendingRedPacketId = null;
 
 // Chat background
-let chatBg = ''; // base64 data URL or empty
+var chatBg = ''; // base64 data URL or empty
 
 // Quick replies
 const QUICK_REPLIES_KEY = 'bles_quick_replies';
-let quickReplies = ['嗯嗯', '哈哈', '想你了', '在干嘛', '晚安'];
+var quickReplies = ['嗯嗯', '哈哈', '想你了', '在干嘛', '晚安'];
 
 
 // Achievements
 const ACHIEVEMENTS_KEY = 'bles_achievements';
-let achievements = {}; // { id: unlockedAt }
+var achievements = {}; // { id: unlockedAt }
 const ACHIEVEMENT_DEFS = [
   { id: 'first_msg', icon: '💬', name: '初次相遇', desc: '发送第一条消息' },
   { id: 'msg_100', icon: '💯', name: '百条心声', desc: '交换 100 条消息' },
@@ -1203,28 +1203,28 @@ const ACHIEVEMENT_DEFS = [
 
 // Scheduled messages
 const SCHEDULED_KEY = 'bles_scheduled_msgs';
-let scheduledMessages = []; // [{ id, time: 'HH:MM', text, active: true }]
+var scheduledMessages = []; // [{ id, time: 'HH:MM', text, active: true }]
 
 // Voice message state
-let nowPlayingVoiceId = null;
-let voicePlayTimer = null;
+var nowPlayingVoiceId = null;
+var voicePlayTimer = null;
 
 // Mood daily log for calendar
 const MOOD_LOG_KEY = 'bles_mood_log';
-let moodLog = {}; // { 'YYYY-MM-DD': count }
+var moodLog = {}; // { 'YYYY-MM-DD': count }
 
 // Performance: message counters for proactive checks
-let msgCountMorning = 0; // cached morning check result
-let msgCountNight = 0;   // cached night check result
-let msgCountIdle = 0;    // cached idle check
+var msgCountMorning = 0; // cached morning check result
+var msgCountNight = 0;   // cached night check result
+var msgCountIdle = 0;    // cached idle check
 
 // Performance: prompt cache
-let cachedSystemPrompt = '';
-let promptCacheVersion = 0;
+var cachedSystemPrompt = '';
+var promptCacheVersion = 0;
 
 // Search state
-let searchResults = [];
-let searchIndex = -1;
+var searchResults = [];
+var searchIndex = -1;
 
 // ── Force-recovery: read ALL data from localStorage directly ────────
 async function loadData() {
@@ -1636,7 +1636,7 @@ function renderPageChat() {
 // ====================================================================
 // Performance: lazy rendering threshold
 const RENDER_LIMIT = 200;  // max messages to render at once
-let renderShowAll = false; // start lazy — only render last N when >threshold
+var renderShowAll = false; // start lazy — only render last N when >threshold
 
 function renderMessages(scrollToBottom = true) {
   const container = document.getElementById('messages');
@@ -1645,7 +1645,7 @@ function renderMessages(scrollToBottom = true) {
   // Lazy mode: if messages exceed threshold, only render the most recent messages
   const total = messages.length;
   const exceeded = total > RENDER_LIMIT + 50;
-  let slice = messages;
+  var slice = messages;
   if (exceeded && !renderShowAll) {
     slice = messages.slice(-RENDER_LIMIT);
   }
@@ -1662,7 +1662,7 @@ function renderMessages(scrollToBottom = true) {
     container.appendChild(loadMore);
   }
 
-  let lastDate = '';
+  var lastDate = '';
   for (const msg of slice) {
     const d = new Date(msg.time);
     const dateStr = d.toLocaleDateString('zh-CN');
@@ -1750,7 +1750,7 @@ function renderMessages(scrollToBottom = true) {
 
     // Long press delete
     if (msg.type !== 'red_packet' && msg.type !== 'gift_sent' && msg.type !== 'gift_received') {
-      let pressTimer = null;
+      var pressTimer = null;
       const startPress = (e) => {
         pressTimer = setTimeout(() => {
           pressTimer = null;
@@ -2139,7 +2139,7 @@ function deleteMemory(id) {
 }
 
 // Auto-extract user info from conversation
-let lastMemoryExtraction = 0;
+var lastMemoryExtraction = 0;
 function maybeExtractMemories(userText, capturedMessages) {
   if (!apiKey) return;
   const userMsgCount = capturedMessages.filter(m => m.role === 'user').length;
@@ -2249,7 +2249,7 @@ async function callDeepSeek(userText, onChunk) {
   }
 
   const isStreaming = !!onChunk;
-  let fullText = ''; // accumulates tokens during streaming, used for abort recovery
+  var fullText = ''; // accumulates tokens during streaming, used for abort recovery
 
   try {
     if (abortController) { abortController.abort(); }
@@ -2300,8 +2300,8 @@ async function callDeepSeek(userText, onChunk) {
     if (!resp.body) { abortController = null; return null; }
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
-    let buffer = '';
-    let streamDone = false;
+    var buffer = '';
+    var streamDone = false;
 
     while (!streamDone) {
       const { done, value } = await reader.read();
@@ -4151,7 +4151,7 @@ function renderMoments() {
   }
 
   const user = userProfile.name || '我';
-  let html = '';
+  var html = '';
   for (const m of moments.slice().reverse()) {
     const isBres = m.author === 'bres';
     const authorName = isBres ? getAgentName() : user;
@@ -4424,8 +4424,8 @@ function updateMomentsBadge() {
 // Auto-interact: AI likes/comments on user posts & replies to user comments
 // Now supports multi-turn replies up to MAX_REPLY_CHAIN exchanges per post
 const MAX_REPLY_CHAIN = 6;
-let lastInteractionTime = 0;
-let _interactErrorCount = 0;
+var lastInteractionTime = 0;
+var _interactErrorCount = 0;
 
 function autoInteractMoments() {
   if (!apiKey || !moments.length || isSending) return;
@@ -4433,7 +4433,7 @@ function autoInteractMoments() {
   if (Date.now() - lastInteractionTime < 15000) return;
 
   const now = Date.now();
-  let didSomething = false;
+  var didSomething = false;
   var agentName = getAgentName();
 
   // Phase 1: Auto-like ONE user post per tick agent hasn't liked yet (no API needed)
@@ -4448,8 +4448,8 @@ function autoInteractMoments() {
   }
 
   // Phase 2: Find one post that needs an AI interaction (comment or reply)
-  let actionTarget = null;
-  let actionType = ''; // 'comment_user_post' | 'reply_user_comment'
+  var actionTarget = null;
+  var actionType = ''; // 'comment_user_post' | 'reply_user_comment'
 
   // Priority 1: User posts where agent hasn't commented yet
   for (const m of moments) {
@@ -4491,8 +4491,8 @@ function autoInteractMoments() {
   lastInteractionTime = now;
 
   // Build prompt — keep it simple, don't confuse the model
-  let sysMsg = '';
-  let usrMsg = '';
+  var sysMsg = '';
+  var usrMsg = '';
   if (actionType === 'comment_user_post') {
     sysMsg = '你是' + agentName + '。用温柔自然的语气回复朋友圈，8-25字。只回复内容本身，不要加引号或前缀。';
     usrMsg = '她发了朋友圈："' + actionTarget.content + '"\n\n请以' + agentName + '的身份评论：';
@@ -4575,8 +4575,8 @@ function autoCleanMemories() {
 
 // Unified heartbeat: replaces 4+ scattered setIntervals with one 15-second tick
 // Each subsystem uses a "last run" timestamp to decide if it should fire
-let _heartbeatId = null;
-let _heartbeatLast = {
+var _heartbeatId = null;
+var _heartbeatLast = {
   fast: 0,    // scheduled messages, status — every 60s
   moments: 0, // autoPost, autoInteract, proactive — every 60s
   redpack: 0, // AI red packet send/claim — every 60s
@@ -4635,8 +4635,8 @@ function checkProactiveMessage() {
   const hour = new Date().getHours();
   // Quiet hours: 0-5 AM, don't disturb
   if (hour >= 0 && hour < 6) return;
-  let reason = '';
-  let msgTag = '';
+  var reason = '';
+  var msgTag = '';
   // Performance: use cached counters, re-scan only on cache miss
   if (msgCountMorning === 0 && msgCountNight === 0) {
     msgCountMorning = messages.some(m => m.role === 'ai' && m.isProactive === 'morning') ? 1 : -1;
@@ -4824,7 +4824,7 @@ function doNudge() {
 }
 
 // Message reaction system
-let pendingReactionMsgId = null;
+var pendingReactionMsgId = null;
 
 function showReactionBar(msgId, event) {
   pendingReactionMsgId = msgId;
@@ -4860,7 +4860,7 @@ function addReaction(emoji) {
 // ====================================================================
 //  Moments Image Support
 // ====================================================================
-let pendingMomentImage = null;
+var pendingMomentImage = null;
 
 function attachMomentImage(input) {
   var file = input.files && input.files[0];
@@ -5293,7 +5293,7 @@ function renderRedPacketBubble(msg, row) {
   }
 }
 
-let isOpeningRedPacket = false;
+var isOpeningRedPacket = false;
 
 function doOpenRedPacket() {
   if (isOpeningRedPacket) return; // Anti-double-click
@@ -5654,12 +5654,12 @@ function exportAsImage() {
   const preview = document.getElementById('exportPreview');
   const content = document.getElementById('exportContent');
 
-  let html = `<div class="ep-header">
+  var html = `<div class="ep-header">
     <div class="ep-title">💚 ${getAgentName()} · 聊天记录</div>
     <div class="ep-sub">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
   </div>`;
 
-  let lastDate = '';
+  var lastDate = '';
   for (const msg of messages) {
     const d = new Date(msg.time);
     const dateStr = d.toLocaleDateString('zh-CN');
@@ -5669,7 +5669,7 @@ function exportAsImage() {
     }
     const name = msg.role === "user" ? (userProfile.name || "我") : getAgentName();
     const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    let msgText = '';
+    var msgText = '';
     if (msg.type === 'red_packet') {
       msgText = '🧧 [红包] ' + (msg.redPacketData?.blessing || '恭喜发财');
     } else if (msg.type === 'voice') {
@@ -5839,7 +5839,7 @@ const STICKERS = [
   { emoji: '💼', label: '工作' },
 ];
 
-let currentEmojiCat = 0;
+var currentEmojiCat = 0;
 
 function initEmojiPanel() {
   // Categories
@@ -5992,7 +5992,7 @@ function updateCharacterStatus() {
   // Only update if mood UI isn't overriding it with mood text
   // Use a separate data attribute to track if mood is being shown
   const hour = new Date().getHours();
-  let status = '';
+  var status = '';
   if (hour >= 7 && hour < 9) status = '正在吃早餐 🥐';
   else if (hour >= 9 && hour < 12) status = '工作中 📋';
   else if (hour >= 12 && hour < 14) status = '午休中 ☕';
@@ -6030,7 +6030,7 @@ updateMoodUI = function() {
 //  Achievement System
 // ====================================================================
 function checkAchievements() {
-  let newBadge = null;
+  var newBadge = null;
   const unlock = (id) => {
     if (!achievements[id]) {
       achievements[id] = Date.now();
@@ -6082,7 +6082,7 @@ function showBadgeToast(def) {
 
 function showAchievements() {
   const unlocked = Object.keys(achievements).length;
-  let html = '<div style="padding:16px;text-align:center;font-size:14px;color:var(--text-secondary);">';
+  var html = '<div style="padding:16px;text-align:center;font-size:14px;color:var(--text-secondary);">';
   html += `已解锁 ${unlocked}/${ACHIEVEMENT_DEFS.length} 个成就</div>`;
   html += '<div class="badge-wall">';
   for (const def of ACHIEVEMENT_DEFS) {
@@ -6127,7 +6127,7 @@ function renderMoodCalendar() {
 
   const grid = document.getElementById('mcGrid');
   const dayLabels = ['日', '一', '二', '三', '四', '五', '六'];
-  let html = dayLabels.map(d => `<div class="mc-day-label">${d}</div>`).join('');
+  var html = dayLabels.map(d => `<div class="mc-day-label">${d}</div>`).join('');
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -6142,8 +6142,8 @@ function renderMoodCalendar() {
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const entry = moodLog[dateStr];
-    let lvlClass = 'no-data';
-    let tooltip = `${dateStr}: 无数据`;
+    var lvlClass = 'no-data';
+    var tooltip = `${dateStr}: 无数据`;
     if (entry && entry.samples > 0) {
       const avgMood = Math.round(entry.totalMood / entry.samples);
       // Map mood 0-100 → level 0-4 (only for days with data)
@@ -7051,7 +7051,7 @@ function escHtml(s) {
 // ====================================================================
 //  Toast
 // ====================================================================
-let toastTimer = null;
+var toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
