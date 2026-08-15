@@ -27,6 +27,7 @@ function psyncGlobals() {
   if (p) {
     apiKey = p.apiKey || '';
     if (p.model) activeModelId = p.model;
+    modelName = activeModelId;
   }
 }
 
