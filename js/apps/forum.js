@@ -9,6 +9,7 @@ async function pforumGetCfg(){try{return await idbGet('pent_forum_cfg')||{proact
 async function pforumSaveCfg(cfg){try{await idbPut('pent_forum_cfg',cfg)}catch(e){}}
 
 function pforumRoomName(aid){try{var rms=rooms&&rooms[aid]?rooms[aid]:[];if(rms.length>0)return rms[0].name}catch(e){}return '日常'}
+function pforumAvatarHTML(a,fb,sz){if(a&&a.indexOf('data:image')===0){return '<img src="'+a+'" style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;vertical-align:middle">'}return '<span style="font-size:'+sz+'px">'+(a||fb)+'</span>'}
 function prForum(){var el=document.getElementById('paForumB');el.style.overflow='hidden';_pforumView='boards';_pforumBoard=null;_pforumPost=null;pforumRender()}
 
 function pforumRender(){var el=document.getElementById('paForumB');
@@ -22,7 +23,7 @@ if(_pforumView==='boards'){
     var boardPosts=posts.filter(function(p){return p.board===_pforumBoard}).sort(function(a,b){return b.time-a.time});
     var h='<div style="display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08)"><span onclick="prForum()" style="cursor:pointer;font-size:22px">‹</span><span style="font-size:24px">'+bd.icon+'</span><span style="font-size:16px;color:#fff;font-weight:600;flex:1">'+bd.name+'</span><span onclick="pforumNewPost()" style="font-size:22px;cursor:pointer">➕</span></div>';
     if(boardPosts.length===0){h+='<div style="color:#888;text-align:center;padding:40px">还没有帖子<br><span style="font-size:12px">点➕发第一个帖</span></div>'}
-    else{for(var i=0;i<boardPosts.length;i++){var p=boardPosts[i];var imgTag=p.image?'<span style="font-size:11px;color:#888">📷</span>':'';h+='<div class="list-item" onclick="pforumOpenPost(\''+p.id+'\')"><span style="font-size:24px">'+(p.authorAvatar||'🤖')+'</span><div style="flex:1;min-width:0"><div style="font-size:15px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.title+'</div><div style="font-size:12px;color:#888">'+(p.authorName||'用户')+(p.roomName?' ['+p.roomName+']':'')+' · '+new Date(p.time).toLocaleDateString('zh-CN')+' · '+(p.replies?p.replies.length:0)+'回复'+imgTag+'</div></div><span style="font-size:10px;color:#666">'+new Date(p.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</span></div>'}}
+    else{for(var i=0;i<boardPosts.length;i++){var p=boardPosts[i];var imgTag=p.image?'<span style="font-size:11px;color:#888">📷</span>':'';h+='<div class="list-item" onclick="pforumOpenPost(\''+p.id+'\')">'+pforumAvatarHTML(p.authorAvatar,'🤖',24)+'<div style="flex:1;min-width:0"><div style="font-size:15px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.title+'</div><div style="font-size:12px;color:#888">'+(p.authorName||'用户')+(p.roomName?' ['+p.roomName+']':'')+' · '+new Date(p.time).toLocaleDateString('zh-CN')+' · '+(p.replies?p.replies.length:0)+'回复'+imgTag+'</div></div><span style="font-size:10px;color:#666">'+new Date(p.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</span></div>'}}
     el.innerHTML=h+'<div style="height:60px"></div>';
   });
 }else if(_pforumView==='post'){
@@ -33,7 +34,7 @@ if(_pforumView==='boards'){
     var ctn=document.createElement('div');ctn.style.cssText='display:flex;flex-direction:column;height:100%';
     var hd=document.createElement('div');hd.style.cssText='display:flex;align-items:center;padding:8px 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0';
     var back=document.createElement('span');back.textContent='‹';back.style.cssText='cursor:pointer;font-size:22px';back.onclick=function(){_pforumView='posts';_pforumPost=null;pforumRender()};
-    var av=document.createElement('span');av.textContent=p.authorAvatar||'🤖';av.style.fontSize='24px';
+    var av=document.createElement('span');av.innerHTML=pforumAvatarHTML(p.authorAvatar,'🤖',24);
     var nm=document.createElement('div');nm.style.cssText='flex:1';nm.innerHTML='<div style="font-size:15px;color:#fff">'+p.authorName+(p.roomName?' <span style="font-size:11px;color:#888">['+p.roomName+']</span>':'')+'</div><div style="font-size:11px;color:#888">'+new Date(p.time).toLocaleString('zh-CN')+'</div>';
     var delPost=document.createElement('span');delPost.textContent='🗑️';delPost.style.cssText='cursor:pointer;font-size:16px;opacity:.5';delPost.onclick=function(){if(confirm('删除这个帖子？')){pforumDelPost(p.id)}};hd.appendChild(delPost);hd.appendChild(back);hd.appendChild(av);hd.appendChild(nm);ctn.appendChild(hd);
     var body=document.createElement('div');body.style.cssText='flex:1;overflow-y:auto;padding:12px';
@@ -45,7 +46,7 @@ if(_pforumView==='boards'){
         var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;margin-bottom:10px;padding:6px;border-radius:8px';
         var isAI=r.authorId&&r.authorId!=='user';
         var replyToTxt=r.replyTo?' <span style="font-size:11px;color:#4da3ff">回复 @'+(r.replyToName||'')+'</span>':'';
-        row.innerHTML='<span style="font-size:20px">'+(r.authorAvatar||'🤖')+'</span><div style="flex:1"><div style="font-size:13px;color:#aaa">'+r.authorName+(r.roomName?' ['+r.roomName+']':'')+replyToTxt+' · '+new Date(r.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</div><div style="color:#ddd;font-size:14px;line-height:1.5">'+r.content+'</div></div>';
+        row.innerHTML=''+pforumAvatarHTML(r.authorAvatar,'🤖',20)+'<div style="flex:1"><div style="font-size:13px;color:#aaa">'+r.authorName+(r.roomName?' ['+r.roomName+']':'')+replyToTxt+' · '+new Date(r.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</div><div style="color:#ddd;font-size:14px;line-height:1.5">'+r.content+'</div></div>';
         if(isAI){row.style.cursor='pointer';row.onclick=function(){_pfReplyTo=r.authorId;_pfReplyToName=r.authorName+(r.roomName?' ['+r.roomName+']':'');var inp2=document.getElementById('pforumReplyInp');if(inp2){inp2.placeholder='回复 @'+_pfReplyToName;inp2.focus()}var cb=document.getElementById('pforumCancelBtn');if(cb)cb.style.display='flex'}}
         var del=document.createElement('span');del.textContent='✕';del.style.cssText='cursor:pointer;color:#ff3b30;font-size:14px;padding:4px';
         del.onclick=function(e){e.stopPropagation();pforumDelReply2(p.id,j)};
