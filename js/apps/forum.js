@@ -50,10 +50,14 @@ if(_pforumView==='boards'){
       body.appendChild(rp);
     }
     ctn.appendChild(body);
-    var ft=document.createElement('div');ft.style.cssText='display:flex;gap:8px;padding:8px;padding-bottom:50px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0';
+    var aiRow=document.createElement('div');aiRow.style.cssText='display:flex;gap:6px;padding:4px 8px;overflow-x:auto;align-items:center;flex-shrink:0;border-top:1px solid rgba(255,255,255,.08)';
+    var aiLbl=document.createElement('span');aiLbl.textContent='触发AI回复：';aiLbl.style.cssText='font-size:11px;color:#888;white-space:nowrap';aiRow.appendChild(aiLbl);
+    for(var ai3=0;ai3<(agents||[]).length;ai3++){(function(ag3){var ab=document.createElement('span');ab.textContent=ag3.avatar+' '+ag3.name;ab.style.cssText='font-size:12px;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,.08);color:#ddd;cursor:pointer;white-space:nowrap';ab.onclick=function(){pnotify({title:'🤖 已触发 '+ag3.name,text:'正在赶来回复...',icon:'💬',silent:true});pforumSingleAIReply(p,ag3.id)};aiRow.appendChild(ab)})(agents[ai3])}
+    var allBtn=document.createElement('span');allBtn.textContent='🎯 全部';allBtn.style.cssText='font-size:12px;padding:4px 10px;border-radius:14px;background:rgba(0,122,255,.3);color:#fff;cursor:pointer;white-space:nowrap';allBtn.onclick=function(){pnotify({title:'🤖 触发所有AI',text:'正在赶来回复...',icon:'💬',silent:true});pforumAIReply(p)};aiRow.appendChild(allBtn);
+    var ft=document.createElement('div');ft.style.cssText='display:flex;gap:8px;padding:8px;padding-bottom:50px;flex-shrink:0';
     var inp=document.createElement('input');inp.id='pforumReplyInp';inp.placeholder='写回复...';inp.style.cssText='flex:1;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#fff;font-size:14px';
     var btn=document.createElement('button');btn.textContent='回复';btn.className='pent-btn';btn.onclick=pforumReply;
-    ft.appendChild(inp);ft.appendChild(btn);ctn.appendChild(ft);
+    ft.appendChild(inp);ft.appendChild(btn);ctn.appendChild(aiRow);ctn.appendChild(ft);
     el.appendChild(ctn);
   });
 }}
