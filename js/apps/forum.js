@@ -46,7 +46,7 @@ if(_pforumView==='boards'){
         var isAI=r.authorId&&r.authorId!=='user';
         var replyToTxt=r.replyTo?' <span style="font-size:11px;color:#4da3ff">回复 @'+(r.replyToName||'')+'</span>':'';
         row.innerHTML='<span style="font-size:20px">'+(r.authorAvatar||'🤖')+'</span><div style="flex:1"><div style="font-size:13px;color:#aaa">'+r.authorName+(r.roomName?' ['+r.roomName+']':'')+replyToTxt+' · '+new Date(r.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</div><div style="color:#ddd;font-size:14px;line-height:1.5">'+r.content+'</div></div>';
-        if(isAI){row.style.cursor='pointer';row.onclick=function(){_pfReplyTo=r.authorId;_pfReplyToName=r.authorName;var inp2=document.getElementById('pforumReplyInp');if(inp2){inp2.placeholder='回复 @'+r.authorName;inp2.focus()}}}
+        if(isAI){row.style.cursor='pointer';row.onclick=function(){_pfReplyTo=r.authorId;_pfReplyToName=r.authorName+(r.roomName?' ['+r.roomName+']':'');var inp2=document.getElementById('pforumReplyInp');if(inp2){inp2.placeholder='回复 @'+_pfReplyToName;inp2.focus()}var cb=document.getElementById('pforumCancelBtn');if(cb)cb.style.display='flex'}}
         var del=document.createElement('span');del.textContent='✕';del.style.cssText='cursor:pointer;color:#ff3b30;font-size:14px;padding:4px';
         del.onclick=function(e){e.stopPropagation();pforumDelReply2(p.id,j)};
         row.appendChild(del);rp.appendChild(row);
@@ -55,7 +55,7 @@ if(_pforumView==='boards'){
     }
     ctn.appendChild(body);
     var ft=document.createElement('div');ft.style.cssText='display:flex;gap:8px;padding:8px;padding-bottom:50px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.08)';
-    var cancelBtn=document.createElement('span');cancelBtn.textContent='✕';cancelBtn.style.cssText='cursor:pointer;color:#888;font-size:16px;padding:8px;display:'+(_pfReplyTo?'flex':'none');cancelBtn.onclick=function(){_pfReplyTo=null;_pfReplyToName=null;var i2=document.getElementById('pforumReplyInp');if(i2)i2.placeholder='写回复...';cancelBtn.style.display='none'};
+    var cancelBtn=document.createElement('span');cancelBtn.id='pforumCancelBtn';cancelBtn.textContent='✕';cancelBtn.style.cssText='cursor:pointer;color:#888;font-size:16px;padding:8px;display:'+(_pfReplyTo?'flex':'none');cancelBtn.onclick=function(){_pfReplyTo=null;_pfReplyToName=null;var i2=document.getElementById('pforumReplyInp');if(i2)i2.placeholder='写回复...';cancelBtn.style.display='none'};
     var inp=document.createElement('input');inp.id='pforumReplyInp';inp.placeholder=_pfReplyTo?('回复 @'+_pfReplyToName):'写回复...';inp.style.cssText='flex:1;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#fff;font-size:14px';
     var btn=document.createElement('button');btn.textContent='回复';btn.className='pent-btn';btn.onclick=pforumReply;
     ft.appendChild(cancelBtn);ft.appendChild(inp);ft.appendChild(btn);ctn.appendChild(ft);
