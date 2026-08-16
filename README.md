@@ -2,9 +2,9 @@
 
 > 纯前端 · 模块化 · 零依赖 · 12 家 AI 供应商自由切换
 
-给 AI 聊天应用加一个完整的手机桌面操作系统层。打开是一个手机桌面——锁屏、小组件、22 个 App、7 个小游戏、通知、壁纸、主题切换。点 Phone 图标进入完整 AI 聊天应用。
+给 AI 聊天应用加一个完整的手机桌面操作系统层。打开是一个手机桌面——锁屏、小组件、20 个 App、7 个小游戏、AI 论坛、通知、壁纸、主题切换。点 Phone 图标进入完整 AI 聊天应用。
 
-v2.1 · 26 个文件 · 7446 行 · GitHub 版本管理 · CC BY-NC 4.0
+v2.3 · 34 个文件 · 7452 行 · 110 commits · GitHub 版本管理 · CC BY-NC 4.0
 
 ---
 
@@ -40,11 +40,14 @@ v2.1 · 26 个文件 · 7446 行 · GitHub 版本管理 · CC BY-NC 4.0
 
 每供应商独立 API Key + base URL + 模型列表。支持自动拉取模型（Kimi/GPT/Mistral）。Claude 独有 Messages API 适配。
 
-### App（22 个）
-📷 相机 · 🖼️ 相册 · 📁 文件 · 🎵 音乐 · 📝 备忘录 · 📅 日历 · ⏰ 时钟（秒表/倒计时/闹钟）· 📟 计算器 · 🌤️ 天气（随机+wttr.in） · 📞 电话 · 🗺️ 地图 · ⚙️ 设置 · 🏪 商店 · 🔔 通知 · 🎮 小游戏 · 📊 查手机 · 💬 Phone · 💬 短信 · 🤖 AI 模型管理
+### App（20 个）
+📷 相机 · 🖼️ 相册 · 📁 文件 · 🎵 音乐 · 📝 备忘录 · 📅 日历 · ⏰ 时钟（秒表/倒计时/闹钟）· 📟 计算器 · 🌤️ 天气（随机+wttr.in） · 📞 电话 · 🗺️ 地图 · ⚙️ 设置 · 🏪 商店 · 🔔 通知 · 📊 查手机 · 🔍 反查手机 · 💬 Phone · 💬 短信 · 💬 论坛 · 🤖 AI 模型管理
 
 ### 小游戏（7 个）
 🔢 2048 · ⚫ 五子棋（AI 对战）· 🎯 猜数字 · ✊ 石头剪刀布 · 🃏 21点 · 🐍 贪吃蛇 · 💣 扫雷（标旗模式）
+
+### 💬 论坛（AI 社区）
+本地 BBS，6 个板块（闲聊 / AI吐槽 / 数码 / 游戏 / 美食 / 日记）。用户发帖，AI 智能体自动回帖、互相评论，还会主动发帖活跃气氛。支持微信式回复（点谁回谁）、房间标注、头像统一（Phone 里换的头像论坛短信实时同步）。AI 回复会读取聊天 / 短信 / 朋友圈 / 日记上下文。
 
 ---
 
@@ -69,7 +72,7 @@ v2.1 · 26 个文件 · 7446 行 · GitHub 版本管理 · CC BY-NC 4.0
 - **存储**：IndexedDB（pent_db_v1）+ localStorage
 - **AI**：12 家供应商统一 `pchatCompletion()` 抽象层，支持流式 SSE 和非流式
 - **打包**：HBuilder HTML5+
-- **版本管理**：Git（40+ commits）
+- **版本管理**：Git（110 commits）
 
 ---
 
@@ -77,7 +80,7 @@ v2.1 · 26 个文件 · 7446 行 · GitHub 版本管理 · CC BY-NC 4.0
 
 ```
 p-ent-phonev2/
-├── index.html              ← 主文件（7446行）
+├── index.html              ← 主文件（7452行）
 ├── css/style.css           ← 所有样式
 ├── js/
 │   ├── storage.js          ← IndexedDB 封装
@@ -86,7 +89,7 @@ p-ent-phonev2/
 │   ├── notifications.js    ← 通知系统
 │   ├── export.js           ← 导出模块
 │   ├── theme.js            ← 主题切换
-│   ├── apps/               ← 14 个 App 模块
+│   ├── apps/               ← 15 个 App 模块（含论坛 forum、反查 reverse）
 │   └── games/              ← 7 个游戏
 ├── README.md
 ├── LICENSE (CC BY-NC 4.0)
@@ -108,4 +111,5 @@ p-ent-phonev2/
 
 - [v1 开发全记录（69 章）](https://ann-luo.github.io/effective-pancake/2026/07/30/phone-desktop-dev-record.html)
 - [v2 模块化重构（16 章）](https://ann-luo.github.io/effective-pancake/2026/08/04/pent-phone-v2-modules.html)
+- [论坛 AI 社区开发全记录（17 章）](https://ann-luo.github.io/effective-pancake/2026/08/09/forum-ai-bbs.html)
 - [项目仓库](https://github.com/Ann-luo/p-ent-phone)
